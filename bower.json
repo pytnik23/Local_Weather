@@ -1,0 +1,19 @@
+{
+  "name": "local_weather",
+  "description": "local weather",
+  "main": "index.js",
+  "authors": [
+    "Oleksii Teplenko <pytnik.tov@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "source/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {}
+}

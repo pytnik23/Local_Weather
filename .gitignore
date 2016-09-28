@@ -1,0 +1,9 @@
+.DC_Store
+node_modules
+source/bower_components
+*.sublime-project
+*.sublime-workspace
+*.rar
+*.zip
+*.7z
+materials

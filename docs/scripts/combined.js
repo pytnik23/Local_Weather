@@ -1,0 +1,1 @@
+var ready=function(o){if("function"==typeof o)return"complete"===document.readyState?o():void document.addEventListener("interactive",o,!1)};ready(function(){var o=0,t=0;navigator.geolocation?navigator.geolocation.getCurrentPosition(function(e){o=e.coords.latitude,t=e.coords.longitude}):alert("Geolocation API не поддерживается в вашем браузере"),console.log(o),console.log(t)});
