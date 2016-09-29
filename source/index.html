@@ -4,14 +4,6 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Local Weather</title>
-
-
-	<script async src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	<!-- bower:js -->
-	<!-- endbower -->
-	<!-- build:js scripts/combined.js -->
-	<script async src="js/main.js"></script>
-	<!-- endbuild -->
 	
 	<link rel="icon" href="images/favicon.png" type="image/gif" sizes="16x16">
 	<link href="https://fonts.googleapis.com/css?family=Lato:100,300" rel="stylesheet">
@@ -19,10 +11,14 @@
 	<!-- bower:css -->
 	<!-- endbower -->
 	<!-- build:css css/combined.css -->
+	<link rel="stylesheet" href="css/icon-position.css">
 	<link rel="stylesheet" href="css/style.css">
 	<!-- endbuild -->
 </head>
 <body>
+	<div id="loader">
+		<img src="images/spinner.gif" alt="spinner">
+	</div>
 	<div class="background-image"></div>
 	<div class="container">
 
@@ -30,11 +26,11 @@
 
 		<div class="location flex__item">
 			<div class="city">Kyiv</div>
-			<div class="country">Ukraine</div>
+			<div class="country">null</div>
 		</div>
 
 		<div class="temperature flex__item">
-			<div class="temperature__value">12</div>
+			<div class="temperature__value">null</div>
 			<div class="temperature__scales">
 				<a href="#" class="temperature__scale temperature__scale_c active">C</a>
 				|
@@ -42,12 +38,23 @@
 			</div>
 		</div>
 
-		<div class="weather-image flex__item">
-			<img src="images/123.png" alt="weather-image" class="weather-image__item">
+		<div class="flex__item">
+			<div class="weather-icon"></div>
 		</div>
 
-		<div class="wind flex__item">Wind 7.31 m/s</div>
+		<div class="wind flex__item">
+			Wind
+			<span class="wind__speed">null</span>
+			m/s
+			<span class="wind__direction">null</span>
+		</div>
 	</div>
 
+	<script async src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<!-- bower:js -->
+	<!-- endbower -->
+	<!-- build:js scripts/combined.js -->
+	<script async src="js/main.js"></script>
+	<!-- endbuild -->
 </body>
 </html>
