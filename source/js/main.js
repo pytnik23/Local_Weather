@@ -1,4 +1,6 @@
-document.getElementById('loader').style.display = 'none';
+function hideLoader() {
+	document.getElementById('loader').style.display = 'none';
+}
 
 var weatherApp = function() {
 
@@ -7,113 +9,159 @@ var weatherApp = function() {
 		country 			= document.getElementsByClassName('country')[0],
 		temperature 		= document.getElementsByClassName('temperature__value')[0],
 		temperatureScales 	= document.getElementsByClassName('temperature__scales')[0],
+		temperature_C 		= document.getElementsByClassName('temperature__scale_c')[0],
+		temperature_F 		= document.getElementsByClassName('temperature__scale_f')[0],
 		weatherImage 		= document.getElementsByClassName('weather-image__item')[0],
 		windSpeed 			= document.getElementsByClassName('wind__speed')[0],
 		windDirection		= document.getElementsByClassName('wind__direction')[0];
 
 	// define variables
-	var data 			= JSON.parse(localStorage.getItem('currentWeather')),
-		currentTime 	= new Date().getTime(),
+	var data 				= JSON.parse(localStorage.getItem('currentWeather')),
+		currentTime 		= new Date().getTime(),
+		currentTempScale	= JSON.parse(localStorage.getItem('currentTempScale')) || 'C',
 		latitude,
 		longitude,
-		tempScale 		= data.tempScale || "C",
-		currentTemp     = data.currentTemp,
-		apiKey 			= '1a30526b61791bf2a0ebd807b705d950';
+		apiKey 				= '1a30526b61791bf2a0ebd807b705d950';
 
 	// check whether the passed 1 minute since the last update
 	if (data) {
 		if ( (data.lastUpdate + 1*60*1000) > currentTime ) {
 			console.log('1 minute not left');
 			render();
+			hideLoader();
 		} else {
 			console.log('1 minute left');
-			init();
+			getCurrentLocation();
 		}
 	} else {
-		init();
+		console.log('It\'s first init');
+		getCurrentLocation();
 	}
 
-	// app init
-	function init() {
-
-		//geolocation identification
+	// get current location
+	function getCurrentLocation() {
 		if(navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function(position) {
 				latitude = position.coords.latitude;
 				longitude = position.coords.longitude;
+				init();
+				hideLoader();
 			});
 		} else {
 			console.log("Geolocation API не поддерживается в вашем браузере");
 			return;
 		}
+	}
+
+	// app INIT
+	function init() {
 
 		// get JSON file. openweathermap API
 		//data = "api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&appid="+apiKey;
 		data = {
-			"coord":{"lon":49.4309808,"lat":31.9086219},
-			"sys":{"country":"UA","sunrise":1369769524,"sunset":1369821049},
-			"weather":[{"id":804,"main":"clouds","description":"overcast clouds","icon":"04n"}],
-			"main":{"temp":289.5,"humidity":89,"pressure":1013,"temp_min":287.04,"temp_max":292.04},
-			"wind":{"speed":7.31,"deg":187.002},
-			"rain":{"3h":0},
-			"clouds":{"all":92},
-			"dt":1369824698,
-			"id":1851632,
-			"name":"Shuzenji",
-			"cod":200
+			"coord": {
+				"lon":30.47,
+				"lat":50.48
+			},
+			"weather": [{
+				"id":801,
+				"main":"Clouds",
+				"description":"few clouds",
+				"icon":"02d"
+			}],
+			"base": "stations",
+			"main": {
+				"temp": 295.944,
+				"pressure": 1015.8,
+				"humidity": 64,
+				"temp_min": 295.944,
+				"temp_max": 295.944,
+				"sea_level": 1030.09,
+				"grnd_level": 1015.8
+			},
+			"wind": {
+				"speed": 7.36,
+				"deg": 234
+			},
+			"clouds": {
+				"all": 12
+			},
+			"dt": 1475235561,
+			"sys": {
+				"message": 0.0035,
+				"country": "UA",
+				"sunrise": 1475207874,
+				"sunset": 1475249811
+			},
+			"id": 703625,
+			"name": "Kurenëvka",
+			"cod": 200
 		};
 
 		// store last update time
-		data.lastUpdate = new Date().getTime();
+		data.lastUpdate 	= new Date().getTime();
 
-		data.tempScale = tempScale;
+		// calc and store currentTemp
+		data.currentTempC 	= calcTemperature(data.main.temp, 'C');
+		data.currentTempF 	= calcTemperature(data.main.temp, 'F');
 
-		data.currentTemp = calcTemperature(data.main.temp, tempScale);
+		setCurrentTemp();
 
 		// store data to localStorage
 		localStorage.setItem('currentWeather', JSON.stringify(data));
 
-
 		render();
 	}
 
-	// get temperature
-	function getTemperature() {
-		currentTemp = calcTemperature(data.main.temp, tempScale);
-		data.currentTemp = currentTemp;
+	// app RENDER
+	function render() {
+		city.innerHTML = data.name;
+		country.innerHTML = data.sys.country;
 		renderTemperature();
+		windSpeed.innerHTML = data.wind.speed;
+		windDirection.innerHTML = data.wind.deg;
 	}
 
 	// calc temperature
-	function calcTemperature(kelvinTemp, scale) {
-		var scale = scale,
-			temp;
+	function calcTemperature(kelvinTemp, tempScale) {
+		var temp;
 
-		if (scale === "C") {
-			console.log('C');
+		if (tempScale === "C") {
 			temp = 300 - kelvinTemp;
-		} else if (scale === "F") {
-			console.log('F');
+		} else if (tempScale === "F") {
 			temp = kelvinTemp * 9/5 - 459.67;
 		} else {
 			console.log('Error! Wrong temperature scale!');
 			return;
 		}
 
-		return temp.toFixed(1);
+		return temp;
 	}
 
-	// app render
-	function render() {
-		country.innerHTML = data.sys.country;
-		temperature.innerHTML = data.currentTemp;
-		windSpeed.innerHTML = data.wind.speed;
-		windDirection.innerHTML = data.wind.deg;
-	}
+	// set current temperature
+	function setCurrentTemp() {
+		if ( currentTempScale === 'C' ) {
+			data.currentTemp = data.currentTempC;
+		} else if ( currentTempScale === 'F' ) {
+			data.currentTemp = data.currentTempF;
+		} else {
+			console.log('Error! setCurrentTemp function');
+		}
+	};
 
 	// temperature render
 	function renderTemperature() {
-		temperature.innerHTML = currentTemp;
+		if ( currentTempScale === 'C' ) {
+			temperature_F.classList.remove('active');
+			temperature_C.classList.add('active');
+		} else if ( currentTempScale === 'F' ) {
+			temperature_C.classList.remove('active');
+			temperature_F.classList.add('active');
+		} else {
+			console.log('Error! How it happend? WTF???');
+		}
+		setCurrentTemp();
+		temperature.innerHTML = data.currentTemp.toFixed(1);
 	}
 
 	// change temperature scale
@@ -122,27 +170,25 @@ var weatherApp = function() {
 		if (target.tagName !=="A") return;
 		e.preventDefault();
 		if ( target.classList.contains("temperature__scale_c") ) {
-			tempScale = "C";
-			document.getElementsByClassName('temperature__scale_f')[0].classList.remove('active');
-			target.classList.add('active');
-			getTemperature();
+			currentTempScale = 'C';
+			renderTemperature();
 		} else if ( target.classList.contains("temperature__scale_f") ) {
-			tempScale = "F";
-			document.getElementsByClassName('temperature__scale_c')[0].classList.remove('active');
-			target.classList.add('active');
-			getTemperature();
+			currentTempScale = 'F';
+			renderTemperature();
 		} else {
-			console.log('Error! temperatureScales does not exist');
+			console.log('Error! What did you click?!?!?');
 		}
 	});
 
+	window.onunload = function() {
+		localStorage.setItem('currentTempScale', JSON.stringify(currentTempScale));
+	};
 };
 
 weatherApp();
 
-// document.addEventListener("DOMContentLoaded", function(e) {
-//
-// });
+
+
 
 
 

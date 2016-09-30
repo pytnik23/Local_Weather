@@ -1,6 +1,6 @@
-#Local Weather
+#(Local Weather App)[https://pytnik23.github.io/Local_Weather/]
 
-##Objective: Build an app that is functionally similar to this: http://codepen.io/FreeCodeCamp/full/bELRjV.
+###Objective: Build an app that is functionally similar to this: http://codepen.io/FreeCodeCamp/full/bELRjV.
 
 **User Story:** I can see the weather in my current location.
 
