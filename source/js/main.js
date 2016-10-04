@@ -11,7 +11,7 @@ var weatherApp = function() {
 		temperatureScales 	= document.getElementsByClassName('temperature__scales')[0],
 		temperature_C 		= document.getElementsByClassName('temperature__scale_c')[0],
 		temperature_F 		= document.getElementsByClassName('temperature__scale_f')[0],
-		weatherImage 		= document.getElementsByClassName('weather-image__item')[0],
+		weatherIcon 		= document.getElementsByClassName('weather-icon')[0],
 		windSpeed 			= document.getElementsByClassName('wind__speed')[0],
 		windDirection		= document.getElementsByClassName('wind__direction')[0];
 
@@ -44,8 +44,21 @@ var weatherApp = function() {
 			navigator.geolocation.getCurrentPosition(function(position) {
 				latitude = position.coords.latitude;
 				longitude = position.coords.longitude;
-				init();
-				hideLoader();
+
+				// get JSON file. openweathermap API
+				var xmlhttp = new XMLHttpRequest();
+				var url = "http://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&appid="+apiKey;
+
+				xmlhttp.onreadystatechange = function() {
+				    if (this.readyState == 4 && this.status == 200) {
+				        var myArr = JSON.parse(this.responseText);
+				        init(myArr);
+				    }
+				};
+				xmlhttp.open("GET", url, true);
+				xmlhttp.send();
+
+				//init();
 			});
 		} else {
 			console.log("Geolocation API не поддерживается в вашем браузере");
@@ -54,49 +67,50 @@ var weatherApp = function() {
 	}
 
 	// app INIT
-	function init() {
+	function init(myArr) {
+		data = myArr;
+		// data = {
+		// 	"coord": {
+		// 		"lon":30.47,
+		// 		"lat":50.48
+		// 	},
+		// 	"weather": [{
+		// 		"id":801,
+		// 		"main":"Clouds",
+		// 		"description":"few clouds",
+		// 		"icon":"02d"
+		// 	}],
+		// 	"base": "stations",
+		// 	"main": {
+		// 		"temp": 295.944,
+		// 		"pressure": 1015.8,
+		// 		"humidity": 64,
+		// 		"temp_min": 295.944,
+		// 		"temp_max": 295.944,
+		// 		"sea_level": 1030.09,
+		// 		"grnd_level": 1015.8
+		// 	},
+		// 	"wind": {
+		// 		"speed": 7.36,
+		// 		"deg": 234
+		// 	},
+		// 	"clouds": {
+		// 		"all": 12
+		// 	},
+		// 	"dt": 1475235561,
+		// 	"sys": {
+		// 		"message": 0.0035,
+		// 		"country": "UA",
+		// 		"sunrise": 1475207874,
+		// 		"sunset": 1475249811
+		// 	},
+		// 	"id": 703625,
+		// 	"name": "Kyiv",
+		// 	"cod": 200
+		// };
 
-		// get JSON file. openweathermap API
-		//data = "api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&appid="+apiKey;
-		data = {
-			"coord": {
-				"lon":30.47,
-				"lat":50.48
-			},
-			"weather": [{
-				"id":801,
-				"main":"Clouds",
-				"description":"few clouds",
-				"icon":"02d"
-			}],
-			"base": "stations",
-			"main": {
-				"temp": 295.944,
-				"pressure": 1015.8,
-				"humidity": 64,
-				"temp_min": 295.944,
-				"temp_max": 295.944,
-				"sea_level": 1030.09,
-				"grnd_level": 1015.8
-			},
-			"wind": {
-				"speed": 7.36,
-				"deg": 234
-			},
-			"clouds": {
-				"all": 12
-			},
-			"dt": 1475235561,
-			"sys": {
-				"message": 0.0035,
-				"country": "UA",
-				"sunrise": 1475207874,
-				"sunset": 1475249811
-			},
-			"id": 703625,
-			"name": "Kurenëvka",
-			"cod": 200
-		};
+		data.coord.lat = latitude;
+		data.coord.lon = longitude;
 
 		// store last update time
 		data.lastUpdate 	= new Date().getTime();
@@ -111,6 +125,7 @@ var weatherApp = function() {
 		localStorage.setItem('currentWeather', JSON.stringify(data));
 
 		render();
+		hideLoader();
 	}
 
 	// app RENDER
@@ -118,8 +133,9 @@ var weatherApp = function() {
 		city.innerHTML = data.name;
 		country.innerHTML = data.sys.country;
 		renderTemperature();
+		weatherIcon.style.backgroundImage = "url('images/weather-icons/"+ data.weather[0].icon +".png')";
 		windSpeed.innerHTML = data.wind.speed;
-		windDirection.innerHTML = data.wind.deg;
+		windDirection.style.transform = "rotate("+ data.wind.deg +"deg)";
 	}
 
 	// calc temperature

@@ -80,7 +80,7 @@ body h1 {
 }
 
 body .city {
-  font-size: 50px;
+  font-size: 36px;
 }
 
 body .temperature__scales {
@@ -88,7 +88,7 @@ body .temperature__scales {
 }
 
 body .temperature__value {
-  font-size: 120px;
+  font-size: 100px;
 }
 
 body .temperature__scale {
@@ -105,4 +105,39 @@ body .temperature__scale:hover {
 body .temperature__scale.active {
   opacity: .5;
   pointer-events: none;
+}
+
+body .weather-icon {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+body .wind__direction {
+  display: inline-block;
+  position: relative;
+  top: 8px;
+  width: 30px;
+  height: 30px;
+  -webkit-border-radius: 50%;
+     -moz-border-radius: 50%;
+          border-radius: 50%;
+  background: url("../images/weather-icons/compass_n.png") no-repeat;
+  -webkit-background-size: cover;
+     -moz-background-size: cover;
+       -o-background-size: cover;
+          background-size: cover;
+  -webkit-transition: -webkit-transform .8s ease 1s;
+  transition: -webkit-transform .8s ease 1s;
+  -o-transition: -o-transform .8s ease 1s;
+  -moz-transition: transform .8s ease 1s, -moz-transform .8s ease 1s;
+  transition: transform .8s ease 1s;
+  transition: transform .8s ease 1s, -webkit-transform .8s ease 1s, -moz-transform .8s ease 1s, -o-transform .8s ease 1s;
+}
+
+body .wind__speed {
+  margin-left: 10px;
 }
