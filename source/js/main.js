@@ -47,7 +47,7 @@ var weatherApp = function() {
 
 				// get JSON file. openweathermap API
 				var xmlhttp = new XMLHttpRequest();
-				var url = "api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&appid="+apiKey;
+				var url = "//api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&appid="+apiKey;
 
 				xmlhttp.onreadystatechange = function() {
 				    if (this.readyState == 4 && this.status == 200) {
