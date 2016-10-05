@@ -45,20 +45,15 @@ var weatherApp = function() {
 				latitude = position.coords.latitude;
 				longitude = position.coords.longitude;
 
-				// get JSON file. openweathermap API
-				var xmlhttp = new XMLHttpRequest();
-				var url = "//api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&appid="+apiKey;
+				var script = document.createElement('script');
+				script.type = 'text/javascript';
+				script.src = "http://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&callback=myCallback&appid=1a30526b61791bf2a0ebd807b705d950";
+				document.body.appendChild(script);
 
-				xmlhttp.onreadystatechange = function() {
-				    if (this.readyState == 4 && this.status == 200) {
-				        var myArr = JSON.parse(this.responseText);
-				        init(myArr);
-				    }
+				window.myCallback = function(arr) {
+					data = arr;
+					init();
 				};
-				xmlhttp.open("GET", url, true);
-				xmlhttp.send();
-
-				//init();
 			});
 		} else {
 			console.log("Geolocation API не поддерживается в вашем браузере");
@@ -67,47 +62,7 @@ var weatherApp = function() {
 	}
 
 	// app INIT
-	function init(myArr) {
-		data = myArr;
-		// data = {
-		// 	"coord": {
-		// 		"lon":30.47,
-		// 		"lat":50.48
-		// 	},
-		// 	"weather": [{
-		// 		"id":801,
-		// 		"main":"Clouds",
-		// 		"description":"few clouds",
-		// 		"icon":"02d"
-		// 	}],
-		// 	"base": "stations",
-		// 	"main": {
-		// 		"temp": 295.944,
-		// 		"pressure": 1015.8,
-		// 		"humidity": 64,
-		// 		"temp_min": 295.944,
-		// 		"temp_max": 295.944,
-		// 		"sea_level": 1030.09,
-		// 		"grnd_level": 1015.8
-		// 	},
-		// 	"wind": {
-		// 		"speed": 7.36,
-		// 		"deg": 234
-		// 	},
-		// 	"clouds": {
-		// 		"all": 12
-		// 	},
-		// 	"dt": 1475235561,
-		// 	"sys": {
-		// 		"message": 0.0035,
-		// 		"country": "UA",
-		// 		"sunrise": 1475207874,
-		// 		"sunset": 1475249811
-		// 	},
-		// 	"id": 703625,
-		// 	"name": "Kyiv",
-		// 	"cod": 200
-		// };
+	function init() {
 
 		data.coord.lat = latitude;
 		data.coord.lon = longitude;
