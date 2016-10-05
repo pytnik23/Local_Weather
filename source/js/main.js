@@ -61,8 +61,9 @@ var weatherApp = function() {
 				var xhr = new XHR(),
 					link = "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=" + apiKey;
 
+
 				// (2) запрос на другой домен :)
-				xhr.open('GET', link, true);
+				xhr.open('POST', link, true);
 
 				xhr.onload = function() {
 					data = JSON.parse(this.responseText);
