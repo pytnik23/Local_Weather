@@ -45,15 +45,36 @@ var weatherApp = function() {
 				latitude = position.coords.latitude;
 				longitude = position.coords.longitude;
 
-				var script = document.createElement('script');
-				script.type = 'text/javascript';
-				script.src = "http://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&callback=myCallback&appid=1a30526b61791bf2a0ebd807b705d950";
-				document.body.appendChild(script);
+				// var script = document.createElement('script');
+				// script.type = 'text/javascript';
+				// script.src = "http://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&callback=myCallback&appid=1a30526b61791bf2a0ebd807b705d950";
+				// document.body.appendChild(script);
 
-				window.myCallback = function(arr) {
-					data = arr;
+				// window.myCallback = function(arr) {
+				// 	data = arr;
+				// 	init();
+				// };
+
+				// (1)
+				var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+
+				var xhr = new XHR(),
+					link = "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=" + apiKey;
+
+				// (2) запрос на другой домен :)
+				xhr.open('GET', link, true);
+
+				xhr.onload = function() {
+					data = JSON.parse(this.responseText);
 					init();
-				};
+				}
+
+				xhr.onerror = function() {
+					alert( 'Ошибка ' + this.status );
+					return;
+				}
+
+				xhr.send();
 			});
 		} else {
 			console.log("Geolocation API не поддерживается в вашем браузере");
@@ -63,9 +84,6 @@ var weatherApp = function() {
 
 	// app INIT
 	function init() {
-
-		data.coord.lat = latitude;
-		data.coord.lon = longitude;
 
 		// store last update time
 		data.lastUpdate 	= new Date().getTime();
