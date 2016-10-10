@@ -21,7 +21,8 @@ var weatherApp = function() {
 		currentTempScale	= JSON.parse(localStorage.getItem('currentTempScale')) || 'C',
 		latitude,
 		longitude,
-		apiKey 				= '1a30526b61791bf2a0ebd807b705d950';
+		//apiKey 				= '1a30526b61791bf2a0ebd807b705d950';
+		apiKey 				= '07384ebfcecc402230f46dd9b2267474';
 
 	// check whether the passed 1 minute since the last update
 	if (data) {
@@ -59,14 +60,16 @@ var weatherApp = function() {
 				var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
 
 				var xhr = new XHR(),
-					link = "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=" + apiKey;
+					//link = "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=" + apiKey;
+					link = "https://api.darksky.net/forecast/" + apiKey + '/' + latitude + "," + longitude;
 
 
 				// (2) запрос на другой домен :)
-				xhr.open('POST', link, true);
+				xhr.open('GET', link, true);
 
 				xhr.onload = function() {
 					data = JSON.parse(this.responseText);
+					console.log(data);
 					init();
 				}
 
@@ -90,7 +93,8 @@ var weatherApp = function() {
 		data.lastUpdate 	= new Date().getTime();
 
 		// calc and store currentTemp
-		data.currentTempC 	= calcTemperature(data.main.temp, 'C');
+		//data.currentTempC 	= calcTemperature(data.main.temp, 'C');
+		data.currentTempC 	= data.currently.temperature;
 		data.currentTempF 	= calcTemperature(data.main.temp, 'F');
 
 		setCurrentTemp();
