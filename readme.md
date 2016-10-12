@@ -1,4 +1,4 @@
-#[Local Weather App](https://pytnik23.github.io/Local_Weather/)
+#[Local Weather App](https://pytnik23.github.io/local-weather/)
 
 ###Objective: Build an app that is functionally similar to this: http://codepen.io/FreeCodeCamp/full/bELRjV.
 
