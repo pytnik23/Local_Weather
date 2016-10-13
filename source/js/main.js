@@ -46,39 +46,114 @@ var weatherApp = function() {
 				latitude = position.coords.latitude;
 				longitude = position.coords.longitude;
 
-				// var script = document.createElement('script');
-				// script.type = 'text/javascript';
-				// script.src = "http://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&callback=myCallback&appid=1a30526b61791bf2a0ebd807b705d950";
-				// document.body.appendChild(script);
 
-				// window.myCallback = function(arr) {
-				// 	data = arr;
-				// 	init();
-				// };
+				// The web services request minus the domain name
+				var path = latitude + ',' + longitude;
 
-				// (1)
-				var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+				// The full path to the PHP proxy
+				var url = 'http://localhost/php_proxy_simple.php?yws_path=' + encodeURIComponent(path);
 
-				var xhr = new XHR(),
-					//link = "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=" + apiKey;
-					link = "https://api.darksky.net/forecast/" + apiKey + '/' + latitude + "," + longitude;
+				// Cross platform xmlhttprequest
 
-
-				// (2) запрос на другой домен :)
-				xhr.open('GET', link, true);
-
-				xhr.onload = function() {
-					data = JSON.parse(this.responseText);
-					console.log(data);
-					init();
+				// Create xmlhttprequest object
+				var xmlhttp = null;
+				if (window.XMLHttpRequest) {
+				        xmlhttp = new XMLHttpRequest();
+				        //make sure that Browser supports overrideMimeType
+				        if ( typeof xmlhttp.overrideMimeType != 'undefined') { xmlhttp.overrideMimeType('application/json'); }
+				} else if (window.ActiveXObject) {
+				        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+				}  else {
+				        alert('Perhaps your browser does not support xmlhttprequests?');
 				}
 
-				xhr.onerror = function() {
-					alert( 'Ошибка ' + this.status );
-					return;
-				}
+				// Create an HTTP GET request
+				xmlhttp.open('GET', url, true);
 
-				xhr.send();
+				// Set the callback function
+				xmlhttp.onreadystatechange = function() {
+				        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				                // Output the results
+				    			  alert(xmlhttp.responseText);
+				        } else {
+				      			// waiting for the call to complete
+				        }
+				    };
+
+				// Make the actual request
+				xmlhttp.send(null);
+
+
+				// var link = "https://api.darksky.net/forecast/" + apiKey + '/' + latitude + "," + longitude;
+
+				// var xhr = new XMLHttpRequest();
+				// xhr.open("GET", link, true);
+				// xhr.send();
+				// xhr.onerror = function() {
+				// 	console.log('Error!');
+				// }
+				// xhr.onload = function() {
+				// 	console.log(this.responseText);
+				// }
+
+				// function addScript(src) {
+				//   var elem = document.createElement("script");
+				//   elem.src = src;
+				//   document.head.appendChild(elem);
+				// }
+
+				// function onUserData(obj) {
+				// 	console.log(obj);
+				// }
+				// addScript(link);
+
+
+				// // Create the XHR object.
+				// function createCORSRequest(method, url) {
+				//   var xhr = new XMLHttpRequest();
+				//   if ("withCredentials" in xhr) {
+				//     // XHR for Chrome/Firefox/Opera/Safari.
+				//     xhr.open(method, url, true);
+				//   } else if (typeof XDomainRequest != "undefined") {
+				//     // XDomainRequest for IE.
+				//     xhr = new XDomainRequest();
+				//     xhr.open(method, url);
+				//   } else {
+				//     // CORS not supported.
+				//     xhr = null;
+				//   }
+				//   return xhr;
+				// }
+
+				// // Helper method to parse the title tag from the response.
+				// function getTitle(text) {
+				//   return text.match('<title>(.*)?</title>')[1];
+				// }
+
+				// // Make the actual CORS request.
+				// function makeCorsRequest() {
+
+				//   var xhr = createCORSRequest('GET', link);
+				//   if (!xhr) {
+				//     alert('CORS not supported');
+				//     return;
+				//   }
+
+				//   // Response handlers.
+				//   xhr.onload = function() {
+				//     data = xhr.responseText;
+				//     console.log(data);
+				//     var title = getTitle(text);
+				//     alert('Response from CORS request to ' + link + ': ' + title);
+				//   };
+
+				//   xhr.onerror = function() {
+				//     alert('Woops, there was an error making the request.');
+				//   };
+
+				//   xhr.send();
+				// }
+				// makeCorsRequest();
 			});
 		} else {
 			console.log("Geolocation API не поддерживается в вашем браузере");
