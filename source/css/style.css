@@ -138,7 +138,8 @@ body .temperature__scales {
 body .temperature__value {
   font-size: 100px;
   background-repeat: no-repeat;
-  background-position: top right;
+  background-position-x: right;
+  background-position-y: 22px;
 }
 
 body .temperature__value.c {
