@@ -51,7 +51,7 @@ var weatherApp = function() {
 				var path = latitude + ',' + longitude;
 
 				// The full path to the PHP proxy
-				var url = 'http://localhost/php_proxy_simple.php?yws_path=' + encodeURIComponent(path);
+				var url = 'php_proxy_simple.php?yws_path=' + encodeURIComponent(path);
 
 				// Cross platform xmlhttprequest
 
