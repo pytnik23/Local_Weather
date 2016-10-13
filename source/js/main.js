@@ -74,7 +74,7 @@ var weatherApp = function() {
 				xmlhttp.onreadystatechange = function() {
 				        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 				                // Output the results
-				    			  alert(xmlhttp.responseText);
+				    			  consile.log(xmlhttp.responseText);
 				        } else {
 				      			// waiting for the call to complete
 				        }
