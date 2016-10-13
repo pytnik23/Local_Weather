@@ -1,28 +1,25 @@
 function hideLoader() {
-	document.getElementById('loader').style.display = 'none';
+	document.getElementById('loader').classList.add('hide');
 }
 
 var weatherApp = function() {
 
 	// define elements
-	var city				= document.getElementsByClassName('city')[0],
-		country 			= document.getElementsByClassName('country')[0],
-		temperature 		= document.getElementsByClassName('temperature__value')[0],
-		temperatureScales 	= document.getElementsByClassName('temperature__scales')[0],
-		temperature_C 		= document.getElementsByClassName('temperature__scale_c')[0],
-		temperature_F 		= document.getElementsByClassName('temperature__scale_f')[0],
-		weatherIcon 		= document.getElementsByClassName('weather-icon')[0],
-		windSpeed 			= document.getElementsByClassName('wind__speed')[0],
-		windDirection		= document.getElementsByClassName('wind__direction')[0];
+	var city				= document.querySelector('.city'),
+		country 			= document.querySelector('.country'),
+		temperature 		= document.querySelector('.temperature__value'),
+		temperatureScales 	= document.querySelector('.temperature__scales'),
+		temperature_C 		= document.querySelector('.temperature__scale_c'),
+		temperature_F 		= document.querySelector('.temperature__scale_f'),
+		weatherDescription	= document.querySelector('.weather-description'),
+		weatherIcon 		= document.querySelector('.weather-icon'),
+		windSpeed 			= document.querySelector('.wind__speed'),
+		windDirection		= document.querySelector('.wind__direction');
 
 	// define variables
 	var data 				= JSON.parse(localStorage.getItem('currentWeather')),
 		currentTime 		= new Date().getTime(),
-		currentTempScale	= JSON.parse(localStorage.getItem('currentTempScale')) || 'C',
-		latitude,
-		longitude,
-		//apiKey 				= '1a30526b61791bf2a0ebd807b705d950';
-		apiKey 				= '07384ebfcecc402230f46dd9b2267474';
+		currentTempScale	= JSON.parse(localStorage.getItem('currentTempScale')) || 'C';
 
 	// check whether the passed 1 minute since the last update
 	if (data) {
@@ -43,117 +40,54 @@ var weatherApp = function() {
 	function getCurrentLocation() {
 		if(navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function(position) {
-				latitude = position.coords.latitude;
-				longitude = position.coords.longitude;
+				var latitude = position.coords.latitude;
+				var longitude = position.coords.longitude;
 
+				var location = latitude + "," + longitude;
 
-				// The web services request minus the domain name
-				var path = latitude + ',' + longitude;
-
-				// The full path to the PHP proxy
-				var url = 'php_proxy_simple.php?yws_path=' + encodeURIComponent(path);
-
-				// Cross platform xmlhttprequest
-
-				// Create xmlhttprequest object
-				var xmlhttp = null;
-				if (window.XMLHttpRequest) {
-				        xmlhttp = new XMLHttpRequest();
-				        //make sure that Browser supports overrideMimeType
-				        if ( typeof xmlhttp.overrideMimeType != 'undefined') { xmlhttp.overrideMimeType('application/json'); }
-				} else if (window.ActiveXObject) {
-				        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-				}  else {
-				        alert('Perhaps your browser does not support xmlhttprequests?');
+				var weatherUrl = 'https://query.yahooapis.com/v1/public/yql?q=';
+				weatherUrl += 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="(' + location + ')") and u="c"';
+				weatherUrl += '&format=json';
+				// Create the XHR object.
+				function createCORSRequest(method, url) {
+				  var xhr = new XMLHttpRequest();
+				  if ("withCredentials" in xhr) {
+				    // XHR for Chrome/Firefox/Opera/Safari.
+				    xhr.open(method, url, true);
+				  } else if (typeof XDomainRequest != "undefined") {
+				    // XDomainRequest for IE.
+				    xhr = new XDomainRequest();
+				    xhr.open(method, url);
+				  } else {
+				    // CORS not supported.
+				    xhr = null;
+				  }
+				  return xhr;
 				}
 
-				// Create an HTTP GET request
-				xmlhttp.open('GET', url, true);
+				// Make the actual CORS request.
+				function makeCorsRequest(url) {
 
-				// Set the callback function
-				xmlhttp.onreadystatechange = function() {
-				        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-				                // Output the results
-				    			  console.log(xmlhttp.responseText);
-				        } else {
-				      			// waiting for the call to complete
-				        }
-				    };
+				  var xhr = createCORSRequest('GET', url);
+				  if (!xhr) {
+				    alert('CORS not supported');
+				    return;
+				  }
 
-				// Make the actual request
-				xmlhttp.send(null);
+				  // Response handlers.
+				  xhr.onload = function() {
+				    data = JSON.parse(xhr.responseText);
+				    init();
+				  };
 
+				  xhr.onerror = function() {
+				    alert('Woops, there was an error making the request.');
+				  };
 
-				// var link = "https://api.darksky.net/forecast/" + apiKey + '/' + latitude + "," + longitude;
+				  xhr.send();
+				}
+				makeCorsRequest(weatherUrl);
 
-				// var xhr = new XMLHttpRequest();
-				// xhr.open("GET", link, true);
-				// xhr.send();
-				// xhr.onerror = function() {
-				// 	console.log('Error!');
-				// }
-				// xhr.onload = function() {
-				// 	console.log(this.responseText);
-				// }
-
-				// function addScript(src) {
-				//   var elem = document.createElement("script");
-				//   elem.src = src;
-				//   document.head.appendChild(elem);
-				// }
-
-				// function onUserData(obj) {
-				// 	console.log(obj);
-				// }
-				// addScript(link);
-
-
-				// // Create the XHR object.
-				// function createCORSRequest(method, url) {
-				//   var xhr = new XMLHttpRequest();
-				//   if ("withCredentials" in xhr) {
-				//     // XHR for Chrome/Firefox/Opera/Safari.
-				//     xhr.open(method, url, true);
-				//   } else if (typeof XDomainRequest != "undefined") {
-				//     // XDomainRequest for IE.
-				//     xhr = new XDomainRequest();
-				//     xhr.open(method, url);
-				//   } else {
-				//     // CORS not supported.
-				//     xhr = null;
-				//   }
-				//   return xhr;
-				// }
-
-				// // Helper method to parse the title tag from the response.
-				// function getTitle(text) {
-				//   return text.match('<title>(.*)?</title>')[1];
-				// }
-
-				// // Make the actual CORS request.
-				// function makeCorsRequest() {
-
-				//   var xhr = createCORSRequest('GET', link);
-				//   if (!xhr) {
-				//     alert('CORS not supported');
-				//     return;
-				//   }
-
-				//   // Response handlers.
-				//   xhr.onload = function() {
-				//     data = xhr.responseText;
-				//     console.log(data);
-				//     var title = getTitle(text);
-				//     alert('Response from CORS request to ' + link + ': ' + title);
-				//   };
-
-				//   xhr.onerror = function() {
-				//     alert('Woops, there was an error making the request.');
-				//   };
-
-				//   xhr.send();
-				// }
-				// makeCorsRequest();
 			});
 		} else {
 			console.log("Geolocation API не поддерживается в вашем браузере");
@@ -163,16 +97,17 @@ var weatherApp = function() {
 
 	// app INIT
 	function init() {
-
 		// store last update time
 		data.lastUpdate 	= new Date().getTime();
 
-		// calc and store currentTemp
-		//data.currentTempC 	= calcTemperature(data.main.temp, 'C');
-		data.currentTempC 	= data.currently.temperature;
-		data.currentTempF 	= calcTemperature(data.main.temp, 'F');
+		data.currentTempC 	= +data.query.results.channel.item.condition.temp;
+		data.currentTempF 	= +calcTemperature(data.currentTempC, 'F');
+
+		data.bgImageUrl 	= "url('https://s.yimg.com/zz/combo?a/i/us/nws/weather/gr/" + data.query.results.channel.item.condition.code + "d.png')";
 
 		setCurrentTemp();
+
+		data.weatherDescription = data.query.results.channel.item.condition.text;
 
 		// store data to localStorage
 		localStorage.setItem('currentWeather', JSON.stringify(data));
@@ -183,22 +118,23 @@ var weatherApp = function() {
 
 	// app RENDER
 	function render() {
-		city.innerHTML = data.name;
-		country.innerHTML = data.sys.country;
+		city.innerHTML = data.query.results.channel.location.city;
+		country.innerHTML = data.query.results.channel.location.country;
 		renderTemperature();
-		weatherIcon.style.backgroundImage = "url('images/weather-icons/"+ data.weather[0].icon +".png')";
-		windSpeed.innerHTML = data.wind.speed;
-		windDirection.style.transform = "rotate("+ data.wind.deg +"deg)";
+		weatherDescription.innerHTML = data.weatherDescription;
+		weatherIcon.style.backgroundImage = data.bgImageUrl;
+		windSpeed.innerHTML = data.query.results.channel.wind.speed;
+		windDirection.style.transform = "rotate("+ data.query.results.channel.wind.direction +"deg)";
 	}
 
 	// calc temperature
-	function calcTemperature(kelvinTemp, tempScale) {
+	function calcTemperature(celciusTemp, tempScale) {
 		var temp;
 
 		if (tempScale === "C") {
-			temp = 300 - kelvinTemp;
+			temp = celciusTemp;
 		} else if (tempScale === "F") {
-			temp = kelvinTemp * 9/5 - 459.67;
+			temp = celciusTemp * 9/5 + 32;
 		} else {
 			console.log('Error! Wrong temperature scale!');
 			return;
@@ -223,14 +159,18 @@ var weatherApp = function() {
 		if ( currentTempScale === 'C' ) {
 			temperature_F.classList.remove('active');
 			temperature_C.classList.add('active');
+			temperature.classList.remove('f');
+			temperature.classList.add('c');
 		} else if ( currentTempScale === 'F' ) {
 			temperature_C.classList.remove('active');
 			temperature_F.classList.add('active');
+			temperature.classList.remove('c');
+			temperature.classList.add('f');
 		} else {
 			console.log('Error! How it happend? WTF???');
 		}
 		setCurrentTemp();
-		temperature.innerHTML = data.currentTemp.toFixed(1);
+		temperature.innerHTML = data.currentTemp.toFixed(0);
 	}
 
 	// change temperature scale

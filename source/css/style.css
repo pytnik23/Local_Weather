@@ -1,9 +1,41 @@
-html, body {
+@-webkit-keyframes rotate {
+  100% {
+    -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+  }
+}
+
+@-moz-keyframes rotate {
+  100% {
+    -moz-transform: rotate(45deg);
+         transform: rotate(45deg);
+  }
+}
+
+@-o-keyframes rotate {
+  100% {
+    -o-transform: rotate(45deg);
+       transform: rotate(45deg);
+  }
+}
+
+@keyframes rotate {
+  100% {
+    -webkit-transform: rotate(45deg);
+       -moz-transform: rotate(45deg);
+         -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+  }
+}
+
+html {
   width: 100%;
   height: 100%;
 }
 
 body {
+  width: 100%;
+  height: 100%;
   font-family: 'Lato', sans-serif;
   font-size: 16px;
   font-weight: 100;
@@ -15,6 +47,7 @@ body {
 
 body #loader {
   position: absolute;
+  display: block;
   left: 0;
   right: 0;
   width: 100%;
@@ -23,14 +56,29 @@ body #loader {
   background-color: #ccc;
 }
 
-body #loader img {
+body #loader.hide {
+  display: none;
+}
+
+body #loader .loager__image {
   position: absolute;
-  top: -webkit-calc(50% - 15px);
-  top: -moz-calc(50% - 15px);
-  top: calc(50% - 15px);
-  left: -webkit-calc(50% - 15px);
-  left: -moz-calc(50% - 15px);
-  left: calc(50% - 15px);
+  top: -webkit-calc(50% - 23.5px);
+  top: -moz-calc(50% - 23.5px);
+  top: calc(50% - 23.5px);
+  left: -webkit-calc(50% - 23.5px);
+  left: -moz-calc(50% - 23.5px);
+  left: calc(50% - 23.5px);
+  display: inline-block;
+  width: 47px;
+  height: 47px;
+  -webkit-border-radius: 100%;
+     -moz-border-radius: 100%;
+          border-radius: 100%;
+  background: url("../images/spinner.png");
+  -webkit-animation: rotate .3s infinite linear;
+     -moz-animation: rotate .3s infinite linear;
+       -o-animation: rotate .3s infinite linear;
+          animation: rotate .3s infinite linear;
 }
 
 body .background-image {
@@ -89,6 +137,16 @@ body .temperature__scales {
 
 body .temperature__value {
   font-size: 100px;
+  background-repeat: no-repeat;
+  background-position: top right;
+}
+
+body .temperature__value.c {
+  background-image: url("../images/celsius.png");
+}
+
+body .temperature__value.f {
+  background-image: url("../images/fahrenheit.png");
 }
 
 body .temperature__scale {
@@ -107,13 +165,20 @@ body .temperature__scale.active {
   pointer-events: none;
 }
 
+body .weather-description {
+  margin-top: 20px;
+}
+
 body .weather-icon {
   display: inline-block;
-  width: 60px;
-  height: 60px;
-  overflow: hidden;
+  width: 180px;
+  height: 180px;
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: left;
+  -webkit-background-size: cover;
+     -moz-background-size: cover;
+       -o-background-size: cover;
+          background-size: cover;
 }
 
 body .wind__direction {
@@ -125,7 +190,7 @@ body .wind__direction {
   -webkit-border-radius: 50%;
      -moz-border-radius: 50%;
           border-radius: 50%;
-  background: url("../images/weather-icons/compass_n.png") no-repeat;
+  background: url("../images/compass_n.png") no-repeat;
   -webkit-background-size: cover;
      -moz-background-size: cover;
        -o-background-size: cover;
