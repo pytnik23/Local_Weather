@@ -90,7 +90,7 @@ var weatherApp = function() {
 
 			});
 		} else {
-			console.log("Geolocation API не поддерживается в вашем браузере");
+			alert("Geolocation API не поддерживается в вашем браузере");
 			return;
 		}
 	}

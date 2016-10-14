@@ -38,11 +38,11 @@ body {
   height: 100%;
   font-family: 'Lato', sans-serif;
   font-size: 16px;
-  font-weight: 100;
+  font-weight: 300;
   text-align: center;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
   color: #fff;
-  overflow: hidden;
+  background-color: #666;
 }
 
 body #loader {
@@ -88,7 +88,6 @@ body .background-image {
   width: 100%;
   height: 100%;
   z-index: -1;
-  background-color: #666;
   background-repeat: no-repeat;
   -webkit-background-size: cover;
      -moz-background-size: cover;
@@ -137,6 +136,7 @@ body .temperature__scales {
 
 body .temperature__value {
   font-size: 100px;
+  font-weight: 100;
   background-repeat: no-repeat;
   background-position-x: right;
   background-position-y: 22px;
@@ -168,6 +168,7 @@ body .temperature__scale.active {
 
 body .weather-description {
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 body .weather-icon {
@@ -180,6 +181,10 @@ body .weather-icon {
      -moz-background-size: cover;
        -o-background-size: cover;
           background-size: cover;
+}
+
+body .wind {
+  margin-bottom: 10px;
 }
 
 body .wind__direction {

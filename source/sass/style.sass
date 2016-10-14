@@ -9,11 +9,12 @@ body
 	height: 100%
 	font-family: 'Lato', sans-serif
 	font-size: 16px
-	font-weight: 100
+	font-weight: 300
 	text-align: center
 	text-shadow: 1px 1px 3px rgba(0,0,0,.3)
 	color: #fff
-	overflow: hidden
+	background-color: #666
+	//overflow: hidden
 
 	#loader
 		position: absolute
@@ -43,7 +44,6 @@ body
 		width: 100%
 		height: 100%
 		z-index: -1
-		background-color: #666
 		//background-image: url("http://www.pixelstalk.net/wp-content/uploads/2016/03/Sun-And-Clouds-Wallpaper-HD.jpg")
 		background-repeat: no-repeat
 		background-size: cover
@@ -68,6 +68,7 @@ body
 		margin-top: 10px
 	.temperature__value
 		font-size: 100px
+		font-weight: 100
 		background-repeat: no-repeat
 		background-position-x: right
 		background-position-y: 22px
@@ -88,6 +89,7 @@ body
 			pointer-events: none
 	.weather-description
 		margin-top: 20px
+		margin-bottom: 20px
 
 	.weather-icon
 		display: inline-block
@@ -97,7 +99,8 @@ body
 		background-repeat: no-repeat
 		background-position: left
 		background-size: cover
-
+	.wind
+		margin-bottom: 10px
 	.wind__direction
 		display: inline-block
 		position: relative
