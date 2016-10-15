@@ -14,17 +14,22 @@ var weatherApp = function() {
 		weatherDescription	= document.querySelector('.weather-description'),
 		weatherIcon 		= document.querySelector('.weather-icon'),
 		windSpeed 			= document.querySelector('.wind__speed'),
-		windDirection		= document.querySelector('.wind__direction');
+		windDirection		= document.querySelector('.wind__direction'),
+		backgroundImage 	= document.querySelector('.background-image');
 
 	// define variables
 	var data 				= JSON.parse(localStorage.getItem('currentWeather')),
+		flickrImages 		= JSON.parse(localStorage.getItem('flickrImages')),
 		currentTime 		= new Date().getTime(),
-		currentTempScale	= JSON.parse(localStorage.getItem('currentTempScale')) || 'C';
+		currentTempScale	= JSON.parse(localStorage.getItem('currentTempScale')) || 'C',
+		latitude,
+		longitude;
 
 	// check whether the passed 1 minute since the last update
 	if (data) {
 		if ( (data.lastUpdate + 1*60*1000) > currentTime ) {
 			console.log('1 minute not left');
+			setBG();
 			render();
 			hideLoader();
 		} else {
@@ -40,8 +45,8 @@ var weatherApp = function() {
 	function getCurrentLocation() {
 		if(navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function(position) {
-				var latitude = position.coords.latitude;
-				var longitude = position.coords.longitude;
+				latitude = position.coords.latitude;
+				longitude = position.coords.longitude;
 
 				var location = latitude + "," + longitude;
 
@@ -111,7 +116,7 @@ var weatherApp = function() {
 
 		// store data to localStorage
 		localStorage.setItem('currentWeather', JSON.stringify(data));
-
+		getBG();
 		render();
 		hideLoader();
 	}
@@ -188,6 +193,68 @@ var weatherApp = function() {
 			console.log('Error! What did you click?!?!?');
 		}
 	});
+
+	
+	// Flickr API section
+
+	function getBG() {
+
+		var url = '';
+		url += 'https://api.flickr.com/services/rest/?method=flickr.photos.search';
+		url += '&format=json';
+		url += '&nojsoncallback=1';
+		url += '&tags=street,nature';
+		url += '&text='+data.query.results.channel.location.city;
+		url += '&content_type=1';
+		//url += '&geo_context=2';
+		//url += '&per_page=100';
+		url += '&api_key=8c9031edcdb082525d3ebedc68843828';
+
+		// Flickr request
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', url, true);
+		xhr.onload = function() {
+		  flickrImages = JSON.parse(this.responseText);
+		  console.dir(flickrImages);
+		  initBG();
+		};
+		xhr.onerror = function() {
+		  console.log('[Flickr] Error!');
+		};
+		xhr.send();
+	}
+
+	function initBG() {
+		localStorage.setItem('flickrImages', JSON.stringify(flickrImages));
+		setBG();
+	}
+
+	function setBG() {
+		var randomPhoto 	= Math.floor(Math.random() * 100),
+			displayHeight 	= document.documentElement.clientHeight;
+
+		var farm 	= flickrImages.photos.photo[randomPhoto].farm,
+			server 	= flickrImages.photos.photo[randomPhoto].server,
+			id 		= flickrImages.photos.photo[randomPhoto].id,
+			secret 	= flickrImages.photos.photo[randomPhoto].secret,
+			size;
+
+		if ( displayHeight < 640 ) {
+			size = 'z';
+		} else if ( displayHeight < 800 ) {
+			size = 'c';
+		} else if ( displayHeight < 1024 ) {
+			size = 'b';
+		} else if ( displayHeight < 1600 ) {
+			size = 'h';
+		} else {
+			size = 'k';
+		}
+
+		var imgLink = 'https://farm'+farm+'.staticflickr.com/'+server+'/'+id+'_'+secret+'_'+size+'.jpg';
+
+		backgroundImage.style.backgroundImage = "url("+imgLink+")";
+	}
 
 	window.onunload = function() {
 		localStorage.setItem('currentTempScale', JSON.stringify(currentTempScale));

@@ -87,15 +87,46 @@ body .background-image {
   right: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
   background-repeat: no-repeat;
   -webkit-background-size: cover;
      -moz-background-size: cover;
        -o-background-size: cover;
           background-size: cover;
+  background-position: center;
+  -webkit-filter: blur(4px);
+          filter: blur(4px);
+}
+
+body .background-image::before {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  content: '';
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+body .flickr-logo {
+  display: inline-block;
+  z-index: 2;
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  padding: 3px;
+  -webkit-border-radius: 2px;
+     -moz-border-radius: 2px;
+          border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+body .flickr-logo img {
+  width: 80px;
+  height: 100%;
 }
 
 body .container {
+  position: relative;
   z-index: 2;
   display: -webkit-inline-box;
   display: -webkit-inline-flex;
