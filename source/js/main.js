@@ -98,6 +98,8 @@ var weatherApp = function() {
 			alert("Geolocation API не поддерживается в вашем браузере");
 			return;
 		}
+
+		
 	}
 
 	// app INIT
