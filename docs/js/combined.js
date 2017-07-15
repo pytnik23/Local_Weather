@@ -35,11 +35,11 @@ var weatherApp = function() {
 			hideLoader();
 		} else {
 			console.log('1 minute left');
-			getCurrentLocation2();
+			getCurrentLocation();
 		}
 	} else {
 		console.log('It\'s first init');
-		getCurrentLocation2();
+		getCurrentLocation();
 	}
 
 	// get current location
@@ -61,12 +61,11 @@ var weatherApp = function() {
 		function showLocation(position) {
 			latitude = position.coords.latitude;
 			longitude = position.coords.longitude;
-
 			var location = latitude + "," + longitude;
 
 			var weatherUrl = 'https://query.yahooapis.com/v1/public/yql?q=';
-			weatherUrl += 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="(' + location + ')") and u="c"';
-			weatherUrl += '&format=json';
+			weatherUrl += encodeURI('select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="(' + location + ')") and u="c"');
+			weatherUrl += encodeURI('&format=json');
 			// Create the XHR object.
 			function createCORSRequest(method, url) {
 				var xhr = new XMLHttpRequest();
@@ -278,12 +277,11 @@ var weatherApp = function() {
 		url += '&nojsoncallback=1';
 		url += '&tags=street,nature';
 		// url += '&text='+data.query.results.channel.location.city;
-		url += '&text=' + ipApiData.city;
+		// url += '&text=' + ipApiData.city;
 		url += '&content_type=1';
-		//url += '&geo_context=2';
-		//url += '&per_page=100';
+		url += '&geo_context=2';
+		// url += '&per_page=100';
 		url += '&api_key=8c9031edcdb082525d3ebedc68843828';
-
 		// Flickr request
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', url, true);
