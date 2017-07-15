@@ -269,7 +269,6 @@ var weatherApp = function() {
 
 	
 	// Flickr API
-
 	function getBG() {
 		var url = '';
 		url += 'https://api.flickr.com/services/rest/?method=flickr.photos.search';
