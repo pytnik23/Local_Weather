@@ -3,7 +3,6 @@ function hideLoader() {
 }
 
 var weatherApp = function() {
-
 	// define elements
 	var city				= document.querySelector('.city'),
 		country 			= document.querySelector('.country'),
@@ -19,11 +18,13 @@ var weatherApp = function() {
 
 	// define variables
 	var data 				= JSON.parse(localStorage.getItem('currentWeather')),
+		ipApiData,
 		flickrImages 		= JSON.parse(localStorage.getItem('flickrImages')),
 		currentTime 		= new Date().getTime(),
 		currentTempScale	= JSON.parse(localStorage.getItem('currentTempScale')) || 'C',
 		latitude,
-		longitude;
+		longitude,
+		location;
 
 	// check whether the passed 1 minute since the last update
 	if (data) {
@@ -34,72 +35,144 @@ var weatherApp = function() {
 			hideLoader();
 		} else {
 			console.log('1 minute left');
-			getCurrentLocation();
+			getCurrentLocation2();
 		}
 	} else {
 		console.log('It\'s first init');
-		getCurrentLocation();
+		getCurrentLocation2();
 	}
 
 	// get current location
 	function getCurrentLocation() {
 		if(navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(function(position) {
-				latitude = position.coords.latitude;
-				longitude = position.coords.longitude;
+			var options = {
+				enableHighAccuracy: true,
+				timeout: 10000,
+				maximumAge: 30000
+			};
 
-				var location = latitude + "," + longitude;
+			navigator.geolocation.getCurrentPosition(showLocation, errorHandler, options);
 
-				var weatherUrl = 'https://query.yahooapis.com/v1/public/yql?q=';
-				weatherUrl += 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="(' + location + ')") and u="c"';
-				weatherUrl += '&format=json';
-				// Create the XHR object.
-				function createCORSRequest(method, url) {
-				  var xhr = new XMLHttpRequest();
-				  if ("withCredentials" in xhr) {
-				    // XHR for Chrome/Firefox/Opera/Safari.
-				    xhr.open(method, url, true);
-				  } else if (typeof XDomainRequest != "undefined") {
-				    // XDomainRequest for IE.
-				    xhr = new XDomainRequest();
-				    xhr.open(method, url);
-				  } else {
-				    // CORS not supported.
-				    xhr = null;
-				  }
-				  return xhr;
-				}
-
-				// Make the actual CORS request.
-				function makeCorsRequest(url) {
-
-				  var xhr = createCORSRequest('GET', url);
-				  if (!xhr) {
-				    alert('CORS not supported');
-				    return;
-				  }
-
-				  // Response handlers.
-				  xhr.onload = function() {
-				    data = JSON.parse(xhr.responseText);
-				    init();
-				  };
-
-				  xhr.onerror = function() {
-				    alert('Woops, there was an error making the request.');
-				  };
-
-				  xhr.send();
-				}
-				makeCorsRequest(weatherUrl);
-
-			});
 		} else {
 			alert("Geolocation API не поддерживается в вашем браузере");
 			return;
 		}
 
-		
+		function showLocation(position) {
+			latitude = position.coords.latitude;
+			longitude = position.coords.longitude;
+
+			var location = latitude + "," + longitude;
+
+			var weatherUrl = 'https://query.yahooapis.com/v1/public/yql?q=';
+			weatherUrl += 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="(' + location + ')") and u="c"';
+			weatherUrl += '&format=json';
+			// Create the XHR object.
+			function createCORSRequest(method, url) {
+				var xhr = new XMLHttpRequest();
+				if ("withCredentials" in xhr) {
+				// XHR for Chrome/Firefox/Opera/Safari.
+					xhr.open(method, url, true);
+				} else if (typeof XDomainRequest != "undefined") {
+					// XDomainRequest for IE.
+					xhr = new XDomainRequest();
+					xhr.open(method, url);
+				} else {
+					// CORS not supported.
+					xhr = null;
+				}
+				return xhr;
+			}
+
+			// Make the actual CORS request.
+			function makeCorsRequest(url) {
+				var xhr = createCORSRequest('GET', url);
+				if (!xhr) {
+					alert('CORS not supported');
+					return;
+				}
+
+				// Response handlers.
+				xhr.onload = function() {
+					data = JSON.parse(xhr.responseText);
+					init();
+				};
+
+				xhr.onerror = function() {
+					alert('Woops, there was an error making the request.');
+				};
+
+				xhr.send();
+			}
+			makeCorsRequest(weatherUrl);
+		}
+
+		function errorHandler(err) {
+			if(err.code == 1) {
+				alert("Error: Access is denied!");
+			}
+			
+			else if( err.code == 2) {
+				alert("Error: Position is unavailable!");
+			}
+		}
+	}
+
+	function getCurrentLocation2() {
+		var xmlhttp = new XMLHttpRequest();
+		var url = "http://ip-api.com/json";
+
+		xmlhttp.onreadystatechange = function() {
+		    if (this.readyState == 4 && this.status == 200) {
+		        ipApiData = JSON.parse(this.responseText);
+		        latitude = ipApiData.lat;
+		        longitude = ipApiData.lon;
+		        location = latitude + "," + longitude;
+		        makeCorsRequest();
+		    }
+		};
+		xmlhttp.open("GET", url, true);
+		xmlhttp.send();
+
+		// Create the XHR object.
+		function createCORSRequest(method, url) {
+			var xhr = new XMLHttpRequest();
+			if ("withCredentials" in xhr) {
+			// XHR for Chrome/Firefox/Opera/Safari.
+				xhr.open(method, url, true);
+			} else if (typeof XDomainRequest != "undefined") {
+				// XDomainRequest for IE.
+				xhr = new XDomainRequest();
+				xhr.open(method, url);
+			} else {
+				// CORS not supported.
+				xhr = null;
+			}
+			return xhr;
+		}
+
+		// Make the actual CORS request.
+		function makeCorsRequest() {
+			var weatherUrl = 'https://query.yahooapis.com/v1/public/yql?q=';
+			weatherUrl += 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="(' + location + ')") and u="c"';
+			weatherUrl += '&format=json';
+
+			var xhr = createCORSRequest('GET', weatherUrl);
+			if (!xhr) {
+				alert('CORS not supported');
+				return;
+			}
+
+			// Response handlers.
+			xhr.onload = function() {
+				data = JSON.parse(xhr.responseText);
+				init();
+			};
+			xhr.onerror = function() {
+				alert('Woops, there was an error making the request.');
+			};
+			xhr.send();
+		}
 	}
 
 	// app INIT
@@ -109,7 +182,6 @@ var weatherApp = function() {
 
 		data.currentTempC 	= +data.query.results.channel.item.condition.temp;
 		data.currentTempF 	= +calcTemperature(data.currentTempC, 'F');
-
 		data.bgImageUrl 	= "url('https://s.yimg.com/zz/combo?a/i/us/nws/weather/gr/" + data.query.results.channel.item.condition.code + "d.png')";
 
 		setCurrentTemp();
@@ -197,16 +269,16 @@ var weatherApp = function() {
 	});
 
 	
-	// Flickr API section
+	// Flickr API
 
 	function getBG() {
-
 		var url = '';
 		url += 'https://api.flickr.com/services/rest/?method=flickr.photos.search';
 		url += '&format=json';
 		url += '&nojsoncallback=1';
 		url += '&tags=street,nature';
-		url += '&text='+data.query.results.channel.location.city;
+		// url += '&text='+data.query.results.channel.location.city;
+		url += '&text=' + ipApiData.city;
 		url += '&content_type=1';
 		//url += '&geo_context=2';
 		//url += '&per_page=100';
@@ -217,7 +289,6 @@ var weatherApp = function() {
 		xhr.open('GET', url, true);
 		xhr.onload = function() {
 		  flickrImages = JSON.parse(this.responseText);
-		  console.dir(flickrImages);
 		  initBG();
 		};
 		xhr.onerror = function() {
@@ -232,7 +303,7 @@ var weatherApp = function() {
 	}
 
 	function setBG() {
-		var randomPhoto 	= Math.floor(Math.random() * 100),
+		var randomPhoto 	= Math.floor(Math.random() * flickrImages.photos.photo.length),
 			displayHeight 	= document.documentElement.clientHeight;
 
 		var farm 	= flickrImages.photos.photo[randomPhoto].farm,
@@ -253,9 +324,13 @@ var weatherApp = function() {
 			size = 'k';
 		}
 
-		var imgLink = 'https://farm'+farm+'.staticflickr.com/'+server+'/'+id+'_'+secret+'_'+size+'.jpg';
+		var tempImg = new Image();
+		tempImg.src = 'https://farm'+farm+'.staticflickr.com/'+server+'/'+id+'_'+secret+'_'+size+'.jpg';
 
-		backgroundImage.style.backgroundImage = "url("+imgLink+")";
+		tempImg.addEventListener('load', () => {
+			backgroundImage.style.backgroundImage = "url(" + tempImg.src + ")";
+		});
+
 	}
 
 	window.onunload = function() {
@@ -264,11 +339,3 @@ var weatherApp = function() {
 };
 
 weatherApp();
-
-
-
-
-
-
-
-

@@ -13,25 +13,28 @@
 	<link rel="stylesheet" href="css/combined.css">
 </head>
 <body>
+	<!-- page loader -->
 	<div id="loader">
 		<div class="loager__image"></div>
 	</div>
+
+	<!-- background image -->
 	<div class="background-image">
 	</div>
-	<a href="https://www.flickr.com" class="flickr-logo" target="_blank">
-		<img src="images/flickr-logo.png" alt="flickr">
-	</a>
+	
 	<div class="container">
 
 		<h1 class="flex__item">Local Weather</h1>
 
+		<!-- location -->
 		<div class="location flex__item">
-			<div class="city">null</div>
-			<div class="country">null</div>
+			<div class="city"></div>
+			<div class="country"></div>
 		</div>
 
+		<!-- temperature -->
 		<div class="temperature flex__item" onmousedown="return false" onselectstart="return false">
-			<div class="temperature__value">null</div>
+			<div class="temperature__value"></div>
 			<div class="temperature__scales">
 				<a href="#" class="temperature__scale temperature__scale_c active">C</a>
 				|
@@ -39,22 +42,31 @@
 			</div>
 		</div>
 
+		<!-- weather description -->
 		<div class="weather-description"></div>
 
+		<!-- weather icon -->
 		<div class="flex__item">
 			<div class="weather-icon"></div>
 		</div>
 
+		<!-- wind -->
 		<div class="wind flex__item">
 			<span class="wind__direction"></span>
-			<span class="wind__speed">null</span>
+			<span class="wind__speed"></span>
 			m/s
 		</div>
+
+		<!-- link to Yahoo -->
 		<a href="https://www.yahoo.com/?ilc=401" target="_blank">
 			<img src="https://poweredby.yahoo.com/white.png" width="134" height="29"/>
 		</a>
 	</div>
-
+	
+	<!-- link to Flickr -->
+	<a href="https://www.flickr.com" class="flickr-logo" target="_blank">
+		<img src="images/flickr-logo.png" alt="flickr">
+	</a>
 
 	<!-- bower:js -->
 	<!-- endbower -->

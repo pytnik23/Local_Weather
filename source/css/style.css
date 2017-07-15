@@ -28,13 +28,15 @@
   }
 }
 
-html, body {
+html {
   width: 100%;
   height: 100%;
 }
 
 body {
+  position: relative;
   margin: 0;
+  min-height: 100%;
   font-family: 'Lato', sans-serif;
   font-size: 16px;
   font-weight: 300;
@@ -42,9 +44,10 @@ body {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
   color: #fff;
   background-color: #666;
+  overflow-y: scroll;
 }
 
-body #loader {
+#loader {
   position: absolute;
   display: block;
   left: 0;
@@ -55,11 +58,11 @@ body #loader {
   background-color: #ccc;
 }
 
-body #loader.hide {
+#loader.hide {
   display: none;
 }
 
-body #loader .loager__image {
+#loader .loager__image {
   position: absolute;
   top: -webkit-calc(50% - 23.5px);
   top: -moz-calc(50% - 23.5px);
@@ -80,21 +83,19 @@ body #loader .loager__image {
           animation: rotate .3s infinite linear;
 }
 
-body .background-image {
+.background-image {
   position: absolute;
   left: 0;
   right: 0;
   width: 100%;
   height: 100%;
   background-repeat: no-repeat;
-  -webkit-background-size: cover;
-     -moz-background-size: cover;
-       -o-background-size: cover;
-          background-size: cover;
+  -moz-background-size: cover;
+       background-size: cover;
   background-position: center;
 }
 
-body .background-image::before {
+.background-image::before {
   position: absolute;
   left: 0;
   right: 0;
@@ -104,7 +105,7 @@ body .background-image::before {
   background-color: rgba(0, 0, 0, 0.6);
 }
 
-body .flickr-logo {
+.flickr-logo {
   display: inline-block;
   z-index: 2;
   position: absolute;
@@ -117,20 +118,20 @@ body .flickr-logo {
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-body .flickr-logo img {
+.flickr-logo img {
   width: 80px;
   height: 100%;
 }
 
-body .container {
+.container {
   position: relative;
-  z-index: 2;
   display: -webkit-inline-box;
   display: -webkit-inline-flex;
   display: -moz-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
-  height: 100%;
+  min-height: 100vh;
+  max-width: 600px;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
@@ -138,31 +139,27 @@ body .container {
      -moz-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  max-width: 600px;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+     -moz-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
 }
 
-body .flex__item {
-  -webkit-box-flex: 1;
-  -webkit-flex: 1 0 auto;
-     -moz-box-flex: 1;
-      -ms-flex: 1 0 auto;
-          flex: 1 0 auto;
-}
-
-body h1 {
+h1 {
   font-size: 18px;
   font-weight: 100;
 }
 
-body .city {
+.city {
   font-size: 36px;
 }
 
-body .temperature__scales {
+.temperature__scales {
   margin-top: 10px;
 }
 
-body .temperature__value {
+.temperature__value {
   font-size: 100px;
   font-weight: 100;
   background-repeat: no-repeat;
@@ -170,52 +167,50 @@ body .temperature__value {
   background-position-y: 22px;
 }
 
-body .temperature__value.c {
+.temperature__value.c {
   background-image: url("../images/celsius.png");
 }
 
-body .temperature__value.f {
+.temperature__value.f {
   background-image: url("../images/fahrenheit.png");
 }
 
-body .temperature__scale {
+.temperature__scale {
   padding-left: 16px;
   padding-right: 16px;
   color: #fff;
   text-decoration: none;
 }
 
-body .temperature__scale:hover {
+.temperature__scale:hover {
   opacity: .8;
 }
 
-body .temperature__scale.active {
+.temperature__scale.active {
   opacity: .5;
   pointer-events: none;
 }
 
-body .weather-description {
+.weather-description {
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
-body .weather-icon {
+.weather-icon {
   display: inline-block;
   width: 180px;
   height: 180px;
   background-repeat: no-repeat;
   background-position: left;
-  -webkit-background-size: cover;
-     -moz-background-size: cover;
-       -o-background-size: cover;
-          background-size: cover;
+  -moz-background-size: cover;
+       background-size: cover;
 }
 
-body .wind {
+.wind {
   margin-bottom: 10px;
 }
 
-body .wind__direction {
+.wind__direction {
   display: inline-block;
   position: relative;
   top: 8px;
@@ -225,10 +220,8 @@ body .wind__direction {
      -moz-border-radius: 50%;
           border-radius: 50%;
   background: url("../images/compass_n.png") no-repeat;
-  -webkit-background-size: cover;
-     -moz-background-size: cover;
-       -o-background-size: cover;
-          background-size: cover;
+  -moz-background-size: cover;
+       background-size: cover;
   -webkit-transition: -webkit-transform .8s ease 1s;
   transition: -webkit-transform .8s ease 1s;
   -o-transition: -o-transform .8s ease 1s;
@@ -237,6 +230,6 @@ body .wind__direction {
   transition: transform .8s ease 1s, -webkit-transform .8s ease 1s, -moz-transform .8s ease 1s, -o-transform .8s ease 1s;
 }
 
-body .wind__speed {
+.wind__speed {
   margin-left: 10px;
 }

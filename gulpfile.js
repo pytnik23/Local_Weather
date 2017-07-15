@@ -31,9 +31,9 @@ gulp.task('css', function() {
 gulp.task('useref', function () {
     return gulp.src('source/*.html')
         .pipe(useref())
-        .pipe(gulpif('*.js', uglify()))
+        .pipe(gulpif('*.js', uglify())
         .pipe(gulpif('*.css', cssmin()))
-        .pipe(gulp.dest('docs'));
+        .pipe(gulp.dest('docs')));
 });
 
 gulp.task('browser-sync', function() {
